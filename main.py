@@ -1,3 +1,0 @@
-sys
-PyQt5
-PyQt5Designer
