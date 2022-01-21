@@ -21,7 +21,7 @@ class DBSample(QMainWindow):
         query = self.textEdit.toPlainText()
         res = self.connection.cursor().execute(query).fetchall()
         # Заполним размеры таблицы
-        self.tableWidget.setColumnCount(5)
+        self.tableWidget.setColumnCount(7)
         self.tableWidget.setRowCount(0)
         # Заполняем таблицу элементами
         for i, row in enumerate(res):
