@@ -19,6 +19,7 @@ class addEditCoffeeForm(QWidget):
         # Получили результат запроса, который ввели в текстовое поле
         result = cur.execute("SELECT * FROM films WHERE id=?",
                              (item_id := self.spinBox.text(),)).fetchall()
+
         # Заполнили размеры таблицы
         self.tableWidget.setRowCount(len(result))
         # Если запись не нашлась, то не будем ничего делать
