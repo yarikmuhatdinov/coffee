@@ -10,24 +10,48 @@ class addEditCoffeeForm(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('addEditCoffeeForm.ui', self)
+
         self.connection = sqlite3.connect("coffee.sqlite")
+        self.modified = {}
+        self.titles = None
 
         self.pushButtonEdit.clicked.connect(self.start_edit)
+        self.pushButtonAdd.clicked.connect(self.add_row)
+        self.pushButtonSave.clicked.connect(self.save_row)
+        self.tableWidget.itemChanged.connect(self.item_changed)
+
+    def item_changed(self, item):
+        self.modified[self.titles[item.column()]] = item.text()
+
+    def save_row(self):
+        if self.modified:
+            cur = self.connection.cursor()
+            que = "UPDATE coffee SET\n"
+            que += ", ".join([f"\'{key}\'='{self.modified.get(key)}'"
+                              for key in self.modified.keys()])
+            que += " WHERE ID=?"
+            print(que)
+            cur.execute(que, (self.spinBox.text(), ))
+            self.connection.commit()
+            self.modified.clear()
+
+    def add_row(self):
+        pass
 
     def start_edit(self):
         cur = self.connection.cursor()
         # Получили результат запроса, который ввели в текстовое поле
-        result = cur.execute("SELECT * FROM films WHERE id=?",
-                             (item_id := self.spinBox.text(),)).fetchall()
+        result = cur.execute("SELECT * FROM coffee WHERE ID=?",
+                             (item_id := self.spinBox.text(), )).fetchall()
 
         # Заполнили размеры таблицы
         self.tableWidget.setRowCount(len(result))
         # Если запись не нашлась, то не будем ничего делать
         if not result:
-            self.statusBar().showMessage('Ничего не нашлось')
+            self.label_info.setText('Ничего не нашлось')
             return
         else:
-            self.statusBar().showMessage(f"Нашлась запись с id = {item_id}")
+            self.label_info.setText(f"Нашлась запись с id = {item_id}")
         self.tableWidget.setColumnCount(len(result[0]))
         self.titles = [description[0] for description in cur.description]
         # Заполнили таблицу полученными элементами

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>277</height>
+    <width>621</width>
+    <height>394</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,7 +27,35 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="0" column="1">
+    <widget class="QSpinBox" name="spinBox">
+     <property name="value">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButtonEdit">
+     <property name="text">
+      <string>Редактировать строку</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="pushButtonAdd">
+     <property name="text">
+      <string>Добавить строку</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="pushButtonSave">
+     <property name="text">
+      <string>Сохранить измененния</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="3">
     <widget class="QTableWidget" name="tableWidget">
      <column>
       <property name="text">
@@ -67,21 +95,19 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="pushButtonAdd">
+    <widget class="QLabel" name="label_info">
+     <property name="font">
+      <font>
+       <kerning>true</kerning>
+      </font>
+     </property>
      <property name="text">
-      <string>Добавить строку</string>
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="pushButtonEdit">
-     <property name="text">
-      <string>Редактировать строку</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QSpinBox" name="spinBox"/>
    </item>
   </layout>
  </widget>
