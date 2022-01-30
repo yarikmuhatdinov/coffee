@@ -10,36 +10,42 @@ class addEditCoffeeForm(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('addEditCoffeeForm.ui', self)
-
-        self.connection = sqlite3.connect("coffee.sqlite")
         self.modified = {}
-        self.titles = None
 
         self.pushButtonEdit.clicked.connect(self.start_edit)
         self.pushButtonAdd.clicked.connect(self.add_row)
         self.pushButtonSave.clicked.connect(self.save_row)
         self.tableWidget.itemChanged.connect(self.item_changed)
 
+
     def item_changed(self, item):
-        self.modified[self.titles[item.column()]] = item.text()
+        if ex.titles[item.column()] != 'ID':
+            self.modified[ex.titles[item.column()]] = item.text()
 
     def save_row(self):
         if self.modified:
-            cur = self.connection.cursor()
+            cur = ex.connection.cursor()
+
+            if self.label_info.text() == 'Добавление строки':
+                last_id = cur.execute("INSERT INTO coffee VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL)").lastrowid
+                self.spinBox.setValue(last_id)
+
             que = "UPDATE coffee SET\n"
             que += ", ".join([f"\'{key}\'='{self.modified.get(key)}'"
                               for key in self.modified.keys()])
             que += " WHERE ID=?"
             print(que)
             cur.execute(que, (self.spinBox.text(), ))
-            self.connection.commit()
+            ex.connection.commit()
             self.modified.clear()
 
     def add_row(self):
-        pass
+        self.label_info.setText('Добавление строки')
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setRowCount(1)
 
     def start_edit(self):
-        cur = self.connection.cursor()
+        cur = ex.connection.cursor()
         # Получили результат запроса, который ввели в текстовое поле
         result = cur.execute("SELECT * FROM coffee WHERE ID=?",
                              (item_id := self.spinBox.text(), )).fetchall()
@@ -53,12 +59,15 @@ class addEditCoffeeForm(QWidget):
         else:
             self.label_info.setText(f"Нашлась запись с id = {item_id}")
         self.tableWidget.setColumnCount(len(result[0]))
-        self.titles = [description[0] for description in cur.description]
         # Заполнили таблицу полученными элементами
         for i, elem in enumerate(result):
             for j, val in enumerate(elem):
                 self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
         self.modified = {}
+
+    def closeEvent(self, event):
+        self.tableWidget.setRowCount(0)
+        ex.select_data()
 
 
 class DBSample(QMainWindow):
@@ -69,14 +78,14 @@ class DBSample(QMainWindow):
         self.connection = sqlite3.connect("coffee.sqlite")
 
         self.pushButton.clicked.connect(self.select_data)
-
         self.textEdit.setPlainText("SELECT * FROM coffee")
-
         self.select_data()
-
         self.pushButtonEdit.clicked.connect(self.addEdit)
-
         self.addEditCoffee = addEditCoffeeForm()
+
+        cur = self.connection.cursor()
+        cur.execute("SELECT * FROM coffee")
+        self.titles = [description[0] for description in cur.description]
 
     def addEdit(self):
         self.addEditCoffee.show()
