@@ -5,11 +5,15 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 
+from addEditCoffeeForm import Ui_addEditCoffeeForm
+from main_ui import Ui_MainWindow
 
-class addEditCoffeeForm(QWidget):
+
+class addEditCoffeeForm(QWidget, Ui_addEditCoffeeForm):
     def __init__(self):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        #uic.loadUi('UI\\addEditCoffeeForm.ui', self)
+        self.setupUi(self)
         self.modified = {}
 
         self.pushButtonEdit.clicked.connect(self.start_edit)
@@ -70,12 +74,13 @@ class addEditCoffeeForm(QWidget):
         ex.select_data()
 
 
-class DBSample(QMainWindow):
+class DBSample(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
+        #uic.loadUi('UI\\main.ui', self)
+        self.setupUi(self)
 
-        self.connection = sqlite3.connect("coffee.sqlite")
+        self.connection = sqlite3.connect("data\\coffee.sqlite")
 
         self.pushButton.clicked.connect(self.select_data)
         self.textEdit.setPlainText("SELECT * FROM coffee")
